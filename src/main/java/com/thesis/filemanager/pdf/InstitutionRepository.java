@@ -1,5 +1,5 @@
 // InstitutionRepository.java
-package com.thesis.filemanager;
+package com.thesis.filemanager.pdf;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

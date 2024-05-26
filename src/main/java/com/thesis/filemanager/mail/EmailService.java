@@ -1,5 +1,5 @@
 // EmailService.java
-package com.thesis.filemanager;
+package com.thesis.filemanager.mail;
 
 import jakarta.mail.util.ByteArrayDataSource;
 import org.springframework.mail.javamail.JavaMailSender;

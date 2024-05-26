@@ -1,7 +1,6 @@
-package com.thesis.filemanager;
+package com.thesis.filemanager.pdf;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.web.multipart.MultipartFile;
 
 public interface PdfFileRepository extends JpaRepository<PdfFile, Long> {
 }

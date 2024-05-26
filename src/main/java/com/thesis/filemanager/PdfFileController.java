@@ -1,5 +1,10 @@
 package com.thesis.filemanager;
 
+import com.thesis.filemanager.mail.EmailService;
+import com.thesis.filemanager.pdf.Institution;
+import com.thesis.filemanager.pdf.InstitutionRepository;
+import com.thesis.filemanager.pdf.PdfFile;
+import com.thesis.filemanager.pdf.PdfFileService;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;

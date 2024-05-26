@@ -1,5 +1,5 @@
 // Institution.java
-package com.thesis.filemanager;
+package com.thesis.filemanager.pdf;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
