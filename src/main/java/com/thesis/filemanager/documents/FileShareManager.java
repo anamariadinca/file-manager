@@ -1,10 +1,13 @@
-package com.thesis.filemanager;
+package com.thesis.filemanager.documents;
 
+import com.thesis.filemanager.*;
+import com.thesis.filemanager.documents.models.PdfFile;
+import com.thesis.filemanager.documents.models.PublicInstitution;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class FileShareService {
+public class FileShareManager {
 
     @Autowired
     private PdfFileService pdfFileService;

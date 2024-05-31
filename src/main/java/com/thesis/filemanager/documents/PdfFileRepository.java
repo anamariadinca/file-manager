@@ -1,6 +1,6 @@
-package com.thesis.filemanager;
+package com.thesis.filemanager.documents;
 
-import com.thesis.filemanager.PdfFile;
+import com.thesis.filemanager.documents.models.PdfFile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

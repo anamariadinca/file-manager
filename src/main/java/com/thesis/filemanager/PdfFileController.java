@@ -1,5 +1,7 @@
 package com.thesis.filemanager;
 
+import com.thesis.filemanager.documents.models.PdfFile;
+import com.thesis.filemanager.documents.PdfFileService;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;

@@ -1,5 +1,6 @@
-package com.thesis.filemanager;
+package com.thesis.filemanager.documents;
 
+import com.thesis.filemanager.documents.models.PdfFile;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;

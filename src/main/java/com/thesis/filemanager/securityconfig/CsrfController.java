@@ -1,4 +1,4 @@
-package com.thesis.filemanager;
+package com.thesis.filemanager.securityconfig;
 
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.GetMapping;

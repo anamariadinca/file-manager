@@ -1,5 +1,6 @@
 package com.thesis.filemanager;
 
+import com.thesis.filemanager.documents.FileShareManager;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class FileShareController {
 
     @Autowired
-    private FileShareService fileShareService;
+    private FileShareManager fileShareService;
 
     @PostMapping("/{fileId}/{institutionId}")
     public ResponseEntity<String> shareFileWithPublicInstitution(

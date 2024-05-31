@@ -1,11 +1,11 @@
-package com.thesis.filemanager;
+package com.thesis.filemanager.documents.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "pdf_files")
+@Table(name = "PDF_FILES")
 public class PdfFile {
 
     @Id
@@ -18,6 +18,5 @@ public class PdfFile {
 
     private String name;
 
-    // Getters and Setters
 }
 

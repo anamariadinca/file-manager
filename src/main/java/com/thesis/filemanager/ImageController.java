@@ -1,5 +1,6 @@
 package com.thesis.filemanager;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -19,11 +20,13 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/images")
+@RequestMapping("/images")
 public class ImageController {
 
     private static final String[] ACCEPTED_FILE_TYPES = {"image/jpeg", "image/jpg", "image/png"};
-    private static final String UPLOAD_DIRECTORY = "cd ~/Documents/doc/code/file-manager/images"; // Placeholder: Update this path
+
+    @Value("${upload.directory}")
+    private static String uploadDir;
 
     private boolean isAcceptedFileType(String contentType) {
         for (String type : ACCEPTED_FILE_TYPES) {
@@ -45,7 +48,7 @@ public class ImageController {
         }
 
         // Define user-specific directory
-        String userDirectory = UPLOAD_DIRECTORY;
+        String userDirectory = uploadDir;
         File userDir = new File(userDirectory);
         if (!userDir.exists()) {
             userDir.mkdirs();
@@ -66,7 +69,7 @@ public class ImageController {
 
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteImageFile(@RequestParam("userId") String userId, @RequestParam("fileName") String fileName) {
-        Path filePath = Paths.get(UPLOAD_DIRECTORY, userId, fileName);
+        Path filePath = Paths.get(uploadDir, userId, fileName);
 
         if (Files.exists(filePath)) {
             try {
@@ -83,7 +86,7 @@ public class ImageController {
     @GetMapping("/{userId}/{fileName}")
     public ResponseEntity<Resource> getImageFile(@PathVariable String userId, @PathVariable String fileName) {
         try {
-            Path filePath = Paths.get(UPLOAD_DIRECTORY, userId, fileName);
+            Path filePath = Paths.get(uploadDir, userId, fileName);
             Resource resource = new UrlResource(filePath.toUri());
 
             if (resource.exists() && resource.isReadable()) {

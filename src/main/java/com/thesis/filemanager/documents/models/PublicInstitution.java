@@ -1,11 +1,11 @@
-package com.thesis.filemanager;
+package com.thesis.filemanager.documents.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "public_institutions")
+@Table(name = "PUBLIC_INSTITUTIONS")
 public class PublicInstitution {
 
     @Id
@@ -21,8 +21,5 @@ public class PublicInstitution {
     @Column(nullable = false, unique = true)
     private String emailAddress;
 
-    // Getters and Setters
-
-    // Constructor
 }
 
