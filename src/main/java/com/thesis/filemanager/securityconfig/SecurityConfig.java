@@ -1,4 +1,4 @@
-package com.thesis.filemanager;
+package com.thesis.filemanager.securityconfig;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

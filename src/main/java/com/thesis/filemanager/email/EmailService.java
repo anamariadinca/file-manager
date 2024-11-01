@@ -1,4 +1,4 @@
-package com.thesis.filemanager;
+package com.thesis.filemanager.email;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;

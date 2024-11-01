@@ -1,4 +1,4 @@
-package com.thesis.filemanager;
+package com.thesis.filemanager.institution;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

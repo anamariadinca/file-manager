@@ -1,5 +1,10 @@
-package com.thesis.filemanager;
+package com.thesis.filemanager.sharefiles;
 
+import com.thesis.filemanager.pdf.PdfFile;
+import com.thesis.filemanager.pdf.PdfFileService;
+import com.thesis.filemanager.institution.PublicInstitution;
+import com.thesis.filemanager.institution.PublicInstitutionRepository;
+import com.thesis.filemanager.email.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

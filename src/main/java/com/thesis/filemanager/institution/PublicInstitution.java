@@ -1,4 +1,4 @@
-package com.thesis.filemanager;
+package com.thesis.filemanager.institution;
 
 import jakarta.persistence.*;
 import lombok.Data;
