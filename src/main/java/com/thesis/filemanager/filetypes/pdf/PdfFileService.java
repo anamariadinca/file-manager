@@ -1,4 +1,4 @@
-package com.thesis.filemanager.pdf;
+package com.thesis.filemanager.filetypes.pdf;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;

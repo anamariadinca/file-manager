@@ -1,4 +1,4 @@
-package com.thesis.filemanager.pdf;
+package com.thesis.filemanager.filetypes.pdf;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

@@ -1,26 +1,31 @@
 package com.thesis.filemanager.sharefiles;
 
-import com.thesis.filemanager.pdf.PdfFile;
-import com.thesis.filemanager.pdf.PdfFileService;
+import com.thesis.filemanager.filetypes.pdf.PdfFile;
+import com.thesis.filemanager.filetypes.pdf.PdfFileService;
 import com.thesis.filemanager.institution.PublicInstitution;
 import com.thesis.filemanager.institution.PublicInstitutionRepository;
 import com.thesis.filemanager.email.EmailService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class FileShareService {
 
-    @Autowired
-    private PdfFileService pdfFileService;
+    private final PdfFileService pdfFileService;
+    private final PublicInstitutionRepository publicInstitutionRepository;
+    private final EmailService emailService;
 
-    @Autowired
-    private PublicInstitutionRepository publicInstitutionRepository;
+    Logger logger = LoggerFactory.getLogger(FileShareService.class);
 
-    @Autowired
-    private EmailService emailService;
+    public FileShareService(PdfFileService pdfFileService, PublicInstitutionRepository publicInstitutionRepository, EmailService emailService) {
+        this.pdfFileService = pdfFileService;
+        this.publicInstitutionRepository = publicInstitutionRepository;
+        this.emailService = emailService;
+    }
 
     public void shareFileWithPublicInstitution(Long fileId, String institutionId, String username) {
+        logger.info("Sharing file with institution: [{}] on behalf of [{}]", institutionId, username);
         PdfFile pdfFile = pdfFileService.getPdfFileById(fileId);
         PublicInstitution institution = publicInstitutionRepository.findByUniqueIdentification(institutionId);
 
