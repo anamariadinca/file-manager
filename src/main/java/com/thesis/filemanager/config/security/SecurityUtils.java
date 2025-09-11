@@ -1,8 +1,7 @@
-package com.thesis.filemanager;
+package com.thesis.filemanager.config.security;
 
 import jakarta.annotation.PostConstruct;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +14,7 @@ import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Base64;
 
+@Slf4j
 @Service
 public class SecurityUtils {
 
@@ -29,7 +29,6 @@ public class SecurityUtils {
 
     private SecretKey secretKey;
     private static final int IV_LENGTH = 16;
-    private final Logger log = LoggerFactory.getLogger(SecurityUtils.class);
 
     @PostConstruct
     public void init() {

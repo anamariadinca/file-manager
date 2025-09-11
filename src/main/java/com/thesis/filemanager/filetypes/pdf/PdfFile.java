@@ -1,14 +1,14 @@
 package com.thesis.filemanager.filetypes.pdf;
 
 import jakarta.persistence.*;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
-@Table(name = "pdf_files")
+
+@Document(collection = "docs")
 public class PdfFile {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     @Lob
     @Column(nullable = false)
@@ -16,11 +16,13 @@ public class PdfFile {
 
     private String name;
 
-    public Long getId() {
+    private String userGuid;
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -40,5 +42,12 @@ public class PdfFile {
         this.name = name;
     }
 
+    public String getUserGuid() {
+        return userGuid;
+    }
+
+    public void setUserGuid(String userGuid) {
+        this.userGuid = userGuid;
+    }
 }
 

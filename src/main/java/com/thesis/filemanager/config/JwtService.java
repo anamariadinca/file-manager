@@ -1,16 +1,14 @@
-package com.thesis.filemanager;
+package com.thesis.filemanager.config;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwt;
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
+import com.thesis.filemanager.config.security.SecurityUtils;
+import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Base64;
 import java.util.Date;
 import java.util.function.Function;
+import java.util.Base64;
 
 @Slf4j
 @Service
@@ -33,19 +31,19 @@ public class JwtService {
         return signingKey;
     }
 
-    public boolean isTokenValid(String token, String username) {
-        final String tokenUsername = extractUsername(token);
-        return (tokenUsername.equals(username)) && !isTokenExpired(token);
+    public boolean isTokenValid(String token, String guid) {
+        final String tokenGuid = extractAndDecryptGuid(token);
+        return (tokenGuid.equals(guid)) && !isTokenExpired(token);
     }
 
     public String extractUsername(String token) {
         //todo extract username from token
-        String encryptedGuid = extractClaim(token, Claims::getSubject);
-        String decryptedGuid = securityUtils.decrypt(encryptedGuid);
-        return decryptedGuid;
+        String encryptedUsername = extractClaim(token, claims -> claims.get("username", String.class));
+        String decryptedUsername = securityUtils.decrypt(encryptedUsername);
+        return decryptedUsername;
     }
 
-    public String extractGuid(String token) {
+    public String extractEncryptedGuid(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 

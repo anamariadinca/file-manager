@@ -1,9 +1,12 @@
 package com.thesis.filemanager.filetypes.pdf;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Service;
 
-@Repository
-public interface PdfFileRepository extends JpaRepository<PdfFile, Long> {
+import java.util.List;
+
+@Service
+public interface PdfFileRepository extends MongoRepository<PdfFile, Long> {
+    List<PdfFile> findByUserGuid(String guid);
 }
 

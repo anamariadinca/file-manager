@@ -5,6 +5,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PdfFileService {
@@ -20,6 +22,7 @@ public class PdfFileService {
         PdfFile pdfFile = new PdfFile();
         pdfFile.setName(fileName);
         pdfFile.setContent(file.getBytes());
+        pdfFile.setUserGuid("b1bde36c-670b-4712-b583-fc18525754fc");
 
         return pdfFileRepository.save(pdfFile);
     }
@@ -30,6 +33,10 @@ public class PdfFileService {
 
     public void deletePdfFile(Long id) {
         pdfFileRepository.deleteById(id);
+    }
+
+    public List<PdfFile> getAllPDFFilesForUser(String guid) {
+        return pdfFileRepository.findByUserGuid(guid);
     }
 }
 

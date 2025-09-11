@@ -1,7 +1,10 @@
-package com.thesis.filemanager;
+package com.thesis.filemanager.documents;
 
+import com.thesis.filemanager.config.JwtService;
 import com.thesis.filemanager.filetypes.pdf.PdfFile;
 import com.thesis.filemanager.filetypes.pdf.PdfFileService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -12,15 +15,39 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/pdf-files")
 public class PdfFileController {
 
     private final PdfFileService pdfFileService;
+    private final JwtService jwtService;
+    private final Logger log = LoggerFactory.getLogger(PdfFileController.class);
 
-    public PdfFileController(PdfFileService pdfFileService) {
+    public PdfFileController(PdfFileService pdfFileService, JwtService jwtService) {
         this.pdfFileService = pdfFileService;
+        this.jwtService = jwtService;
+    }
+
+    @GetMapping("/names")
+    public ResponseEntity<List<FileNameAndId>> getPdfFileNames(@RequestHeader("Authorization") String token) {
+        String jwt = token.substring(7);
+        String guid = jwtService.extractAndDecryptGuid(jwt);
+
+        log.info("gathering file names for user [{}]", guid);
+
+        List<PdfFile> pdfFiles = pdfFileService.getAllPDFFilesForUser(guid);
+
+        if (pdfFiles.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<FileNameAndId> fileNameAndIds = pdfFiles.stream().map(file -> new FileNameAndId(file.getId(), file.getName())).collect(Collectors.toList());
+
+        return ResponseEntity.ok()
+                .body(fileNameAndIds);
     }
 
     @PostMapping
