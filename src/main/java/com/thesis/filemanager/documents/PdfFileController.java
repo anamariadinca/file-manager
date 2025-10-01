@@ -50,10 +50,34 @@ public class PdfFileController {
                 .body(fileNameAndIds);
     }
 
+    @GetMapping("/metadata")
+    public ResponseEntity<List<FileMetadata>> getPdfFilesMetadata(@RequestHeader("Authorization") String token) {
+        String jwt = token.substring(7);
+        String guid = jwtService.extractAndDecryptGuid(jwt);
+
+        log.info("gathering file names for user [{}]", guid);
+
+        List<PdfFile> pdfFiles = pdfFileService.getAllPDFFilesForUser(guid);
+
+        if (pdfFiles.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<FileMetadata> fileMetadata = pdfFiles.stream().map(file -> new FileMetadata(file.getId(), file.getName(), file.getCreatedDate(), file.getSize())).collect(Collectors.toList());
+
+        return ResponseEntity.ok()
+                .body(fileMetadata);
+    }
+
     @PostMapping
-    public ResponseEntity<String> uploadPdfFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> uploadPdfFile(@RequestHeader("Authorization") String token, @RequestParam("file") MultipartFile file) {
+        String jwt = token.substring(7);
+        String guid = jwtService.extractAndDecryptGuid(jwt);
+
+        log.info("gathering file names for user [{}]", guid);
+
         try {
-            PdfFile pdfFile = pdfFileService.savePdfFile(file);
+            PdfFile pdfFile = pdfFileService.savePdfFile(guid, file);
             return ResponseEntity.ok("File uploaded successfully with ID: " + pdfFile.getId());
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file");
