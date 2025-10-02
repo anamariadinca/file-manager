@@ -65,7 +65,7 @@ public class PdfFileController {
             return ResponseEntity.ok(Collections.emptyList());
         }
 
-        List<FileMetadata> fileMetadata = filesMetadata.stream().map(file -> new FileMetadata(file.getId(), file.getName(), file.getCreatedDate(), file.getSize())).collect(Collectors.toList());
+        List<FileMetadata> fileMetadata = filesMetadata.stream().map(file -> new FileMetadata(file.getId(), file.getName(), file.getCreatedDate(), file.getSize(), file.isFavorite())).collect(Collectors.toList());
 
         return ResponseEntity.ok()
                 .body(fileMetadata);
