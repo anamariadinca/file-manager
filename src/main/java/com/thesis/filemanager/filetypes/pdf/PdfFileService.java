@@ -1,5 +1,7 @@
 package com.thesis.filemanager.filetypes.pdf;
 
+import com.thesis.filemanager.filetypes.DocumentType;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,52 +12,79 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+import java.util.UUID;
 
 @Service
 public class PdfFileService {
 
     private final PdfFileRepository pdfFileRepository;
+    private final PdfFileMetadataRepository pdfFileMetadataRepository;
 
-    public PdfFileService(PdfFileRepository pdfFileRepository) {
+    public PdfFileService(PdfFileRepository pdfFileRepository, PdfFileMetadataRepository pdfFileMetadataRepository) {
         this.pdfFileRepository = pdfFileRepository;
+        this.pdfFileMetadataRepository = pdfFileMetadataRepository;
     }
 
     public PdfFile savePdfFile(String userGuid, MultipartFile file) throws IOException {
-        //todo  fix user guid -> from token
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        PdfFile pdfFile = new PdfFile();
-        pdfFile.setName(fileName);
-        pdfFile.setContent(file.getBytes());
-        pdfFile.setUserGuid(userGuid);
+        String fileId = UUID.randomUUID().toString();
+
+        PdfFileMetadata metadata = new PdfFileMetadata();
+        metadata.setId(fileId);
+        metadata.setName(fileName);
+        metadata.setUserGuid(userGuid);
+        metadata.setDocumentType(getRandomDocumentType());
+        metadata.setFavorite(false);
 
         LocalDate localDate = LocalDate.now();
-        pdfFile.setCreatedDate(localDate);
-        pdfFile.setLastModifiedDate(localDate);
-        pdfFile.setSize((int) file.getSize());
+        metadata.setCreatedDate(localDate);
+        metadata.setLastModifiedDate(localDate);
+        metadata.setSize((int) file.getSize());
+        pdfFileMetadataRepository.save(metadata);
 
-        return pdfFileRepository.save(pdfFile);
-    }
-
-    public PdfFile savePdfFile(MultipartFile file) throws IOException {
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         PdfFile pdfFile = new PdfFile();
-        pdfFile.setName(fileName);
+        pdfFile.setId(fileId);
         pdfFile.setContent(file.getBytes());
-        pdfFile.setUserGuid("52540395-3085-4124-99ea-f3174d131511");
-
-        return pdfFileRepository.save(pdfFile);
+        pdfFile.setPdfFileMetadata(metadata);
+        PdfFile savedFile = pdfFileRepository.save(pdfFile);
+        return savedFile;
     }
 
-    public PdfFile getPdfFileById(Long id) {
+    private static DocumentType getRandomDocumentType() {
+        DocumentType[] documentTypes = DocumentType.values();
+        Random random = new Random();
+        DocumentType randomDocumentType = documentTypes[random.nextInt(documentTypes.length)];
+        return randomDocumentType;
+    }
+
+    public PdfFile getPdfFileById(String id) {
         return pdfFileRepository.findById(id).orElse(null);
     }
 
-    public void deletePdfFile(Long id) {
-        pdfFileRepository.deleteById(id);
+    public PdfFileMetadata getFileMetadataById(String id) {
+        return pdfFileMetadataRepository.findById(id).orElse(null);
     }
 
-    public List<PdfFile> getAllPDFFilesForUser(String guid) {
-        return pdfFileRepository.findByUserGuid(guid);
+    public void deletePdfFile(String id) {
+        pdfFileRepository.deleteById(id);
+        pdfFileMetadataRepository.deleteById(id);
+    }
+
+    public List<PdfFileMetadata> getAllPDFFilesForUser(String guid) {
+        return pdfFileMetadataRepository.findByUserGuid(guid);
+    }
+
+    @Transactional
+    public void setFileAsFavorite(String guid, String fileId) {
+        long noOfFavoriteFiles = pdfFileMetadataRepository.findByUserGuid(guid).stream().filter(PdfFileMetadata::isFavorite).count();
+
+        if (noOfFavoriteFiles > 5) {
+            throw new ArithmeticException();
+        }
+
+        Optional<PdfFileMetadata> fileMetadata = pdfFileMetadataRepository.findById(fileId);
+        fileMetadata.ifPresent(pdfFileMetadata -> pdfFileMetadata.setFavorite(true));
     }
 }
 

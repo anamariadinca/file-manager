@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public interface PdfFileRepository extends MongoRepository<PdfFile, Long> {
-    List<PdfFile> findByUserGuid(String guid);
+public interface PdfFileRepository extends MongoRepository<PdfFile, String> {
 }
 
