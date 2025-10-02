@@ -1,18 +1,18 @@
-package com.thesis.filemanager.filetypes.id;
+package com.thesis.filemanager.filetypes.pictures.selfie;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "id_pictures")
-public class IdPicture {
+@Document(collection = "selfie_pictures")
+public class SelfiePicture {
 
     @Id
     private String id;
     private byte[] content;
 
     @DBRef
-    private IdPictureMetadata metadata;
+    private SelfiePictureMetadata metadata;
 
     public String getId() {
         return id;
@@ -30,11 +30,11 @@ public class IdPicture {
         this.content = content;
     }
 
-    public IdPictureMetadata getMetadata() {
+    public SelfiePictureMetadata getMetadata() {
         return metadata;
     }
 
-    public void setMetadata(IdPictureMetadata metadata) {
+    public void setMetadata(SelfiePictureMetadata metadata) {
         this.metadata = metadata;
     }
 }

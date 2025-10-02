@@ -1,4 +1,4 @@
-package com.thesis.filemanager.filetypes.selfie;
+package com.thesis.filemanager.filetypes.pictures.selfie;
 
 
 import com.thesis.filemanager.filetypes.VerificationStatus;
@@ -17,7 +17,7 @@ public class SelfiePictureMetadata {
 
     String name;
 
-    String userUuid;
+    String userGuid;
 
     LocalDate dateUploaded;
 
@@ -41,12 +41,12 @@ public class SelfiePictureMetadata {
         this.name = name;
     }
 
-    public String getUserUuid() {
-        return userUuid;
+    public String getUserGuid() {
+        return userGuid;
     }
 
-    public void setUserUuid(String userUuid) {
-        this.userUuid = userUuid;
+    public void setUserGuid(String userUuid) {
+        this.userGuid = userUuid;
     }
 
     public LocalDate getDateUploaded() {

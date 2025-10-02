@@ -1,12 +1,8 @@
 package com.thesis.filemanager.filetypes.pdf;
 
-import com.thesis.filemanager.filetypes.selfie.SelfiePictureMetadata;
 import jakarta.persistence.*;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.sql.Date;
-import java.time.LocalDate;
 
 
 @Document(collection = "docs")
