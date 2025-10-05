@@ -62,6 +62,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
 //                        .requestMatchers("/register/admin", "/register/user", "/users/authenticate").permitAll()
+                                .requestMatchers("/api/pictures/*/getProfilePic").permitAll()
                         .requestMatchers("/csrf").permitAll()
                         .anyRequest().authenticated()
                 )

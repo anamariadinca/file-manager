@@ -1,9 +1,10 @@
 package com.thesis.filemanager.pictures;
 
 import com.thesis.filemanager.config.JwtService;
+import com.thesis.filemanager.filetypes.pictures.Picture;
+import com.thesis.filemanager.filetypes.pictures.PictureMetadata;
 import com.thesis.filemanager.filetypes.pictures.PictureService;
-import com.thesis.filemanager.filetypes.pictures.id.IdPicture;
-import com.thesis.filemanager.filetypes.pictures.id.IdPictureMetadata;
+import com.thesis.filemanager.filetypes.pictures.PictureType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
@@ -31,6 +32,22 @@ public class PicturesController {
     }
 
     @PostMapping
+    public ResponseEntity<String> uploadPicture(@RequestHeader("Authorization") String token,
+                                                @RequestParam("picture") MultipartFile picture,
+                                                @RequestParam("pictureType") PictureType pictureType) {
+        String jwt = token.substring(7);
+        String guid = jwtService.extractAndDecryptGuid(jwt);
+
+        log.info("gathering file names for user [{}]", guid);
+        try {
+            pictureService.savePicture(guid, picture, pictureType);
+            return ResponseEntity.ok("Pictures uploaded successfully");
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file");
+        }
+    }
+
+    @PostMapping("/registrationPics")
     public ResponseEntity<String> uploadRegistrationPictures(@RequestHeader("Authorization") String token,
                                                              @RequestParam("idCardPhoto") MultipartFile idCardPhoto,
                                                              @RequestParam("selfiePhoto") MultipartFile selfiePhoto) {
@@ -40,8 +57,8 @@ public class PicturesController {
         log.info("gathering file names for user [{}]", guid);
 
         try {
-            String registrationPicturesId = pictureService.saveRegistrationPictures(guid, idCardPhoto, selfiePhoto);
-            return ResponseEntity.ok("Pictures uploaded successfully with ID: " + registrationPicturesId);
+            pictureService.saveRegistrationPictures(guid, idCardPhoto, selfiePhoto);
+            return ResponseEntity.ok("Pictures uploaded successfully");
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file");
         }
@@ -49,12 +66,12 @@ public class PicturesController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Resource> getPicture(@PathVariable String id) {
-        IdPicture idPicture = pictureService.getPictureById(id);
+        Picture idPicture = pictureService.getPictureById(id);
         if (idPicture == null) {
             return ResponseEntity.ok().build();
         }
 
-        IdPictureMetadata fileMetadata = pictureService.getFileMetadataById(id);
+        PictureMetadata fileMetadata = pictureService.getFileMetadataById(id);
         if (fileMetadata == null) {
             return ResponseEntity.ok().build();
         }
@@ -64,6 +81,59 @@ public class PicturesController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileMetadata.getName());
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(resource);
+    }
+
+    @GetMapping("/getProfilePic")
+    public ResponseEntity<Resource> getProfilePicture(@RequestHeader("Authorization") String token) {
+        String jwt = token.substring(7);
+        String guid = jwtService.extractAndDecryptGuid(jwt);
+
+        log.info("gathering file names for user [{}]", guid);
+
+
+        Picture idPicture = pictureService.getPictureByUserGuid(guid);
+        if (idPicture == null) {
+            return ResponseEntity.ok().build();
+        }
+
+        byte[] pdfContent = idPicture.getContent();
+        Resource resource = new ByteArrayResource(pdfContent);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + guid + "_profile_pic");
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(resource);
+    }
+
+    @GetMapping("/{guid}/getProfilePic")
+    public ResponseEntity<Resource> getProfilePictureByUserGuid(@PathVariable String guid) {
+        log.info("gathering file names for user [{}]", guid);
+
+
+        Picture idPicture = pictureService.getPictureByUserGuid(guid);
+        if (idPicture == null) {
+            return ResponseEntity.ok().build();
+        }
+
+        byte[] pictureContent = idPicture.getContent();
+        Resource resource = new ByteArrayResource(pictureContent);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + guid + "_profile_pic.jpeg");
         headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
         headers.add("Pragma", "no-cache");
         headers.add("Expires", "0");

@@ -21,11 +21,8 @@ public class ProtectedKeyFilter extends OncePerRequestFilter {
         String requestKey = request.getHeader("x-api-key");
 
         String requestURI = request.getRequestURI();
-        if ("/register/admin".equals(requestURI)
-                || "/register/user".equals(requestURI)
-                || "/users/authenticate".equals(requestURI)
-                || "/clean".equals(requestURI)
-                || "/*/changeUserStatus".equals(requestKey) ) {
+        if (requestURI.matches("/api/pictures/[^/]+/getProfilePic")
+                || "/register/user".equals(requestURI) ) {
             if (protectedKey.equals(requestKey)) {
                 filterChain.doFilter(request, response);
             } else {

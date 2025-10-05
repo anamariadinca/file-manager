@@ -1,16 +1,13 @@
-package com.thesis.filemanager.filetypes.pictures.selfie;
+package com.thesis.filemanager.filetypes.pictures;
 
 
-import com.thesis.filemanager.filetypes.VerificationStatus;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "id_picture_metadata")
-public class SelfiePictureMetadata {
+@Table(name = "picture_metadata")
+public class PictureMetadata {
 
     @Id
     String id;
@@ -21,9 +18,10 @@ public class SelfiePictureMetadata {
 
     LocalDate dateUploaded;
 
-    VerificationStatus verificationStatus;
-
     int size;
+
+    @Enumerated(EnumType.STRING)
+    PictureType pictureType;
 
     public String getId() {
         return id;
@@ -65,11 +63,11 @@ public class SelfiePictureMetadata {
         this.size = size;
     }
 
-    public VerificationStatus getVerificationStatus() {
-        return verificationStatus;
+    public PictureType getPictureType() {
+        return pictureType;
     }
 
-    public void setVerificationStatus(VerificationStatus verificationStatus) {
-        this.verificationStatus = verificationStatus;
+    public void setPictureType(PictureType pictureType) {
+        this.pictureType = pictureType;
     }
 }

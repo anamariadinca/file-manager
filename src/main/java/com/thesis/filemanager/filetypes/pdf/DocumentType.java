@@ -1,4 +1,4 @@
-package com.thesis.filemanager.filetypes;
+package com.thesis.filemanager.filetypes.pdf;
 
 public enum DocumentType {
     ID_CARD,

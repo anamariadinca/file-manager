@@ -1,6 +1,5 @@
 package com.thesis.filemanager.filetypes.pdf;
 
-import com.thesis.filemanager.filetypes.DocumentType;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;

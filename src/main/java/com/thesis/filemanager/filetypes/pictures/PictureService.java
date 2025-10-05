@@ -1,15 +1,5 @@
 package com.thesis.filemanager.filetypes.pictures;
 
-import com.thesis.filemanager.filetypes.pdf.PdfFile;
-import com.thesis.filemanager.filetypes.pdf.PdfFileMetadata;
-import com.thesis.filemanager.filetypes.pictures.id.IdPicture;
-import com.thesis.filemanager.filetypes.pictures.id.IdPictureMetadata;
-import com.thesis.filemanager.filetypes.pictures.id.IdPictureMetadataRepository;
-import com.thesis.filemanager.filetypes.pictures.id.IdPictureRepository;
-import com.thesis.filemanager.filetypes.pictures.selfie.SelfiePicture;
-import com.thesis.filemanager.filetypes.pictures.selfie.SelfiePictureMetadata;
-import com.thesis.filemanager.filetypes.pictures.selfie.SelfiePictureMetadataRepository;
-import com.thesis.filemanager.filetypes.pictures.selfie.SelfiePictureRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,74 +12,65 @@ import java.util.UUID;
 @Service
 public class PictureService {
 
-    private final IdPictureRepository idPictureRepository;
-    private final SelfiePictureRepository selfiePictureRepository;
-    private final IdPictureMetadataRepository idPictureMetadataRepository;
-    private final SelfiePictureMetadataRepository selfiePictureMetadataRepository;
+    private final PictureRepository pictureRepository;
+    private final PictureMetadataRepository pictureMetadataRepository;
 
-    public PictureService(IdPictureRepository idPictureRepository, SelfiePictureRepository selfiePictureRepository, IdPictureMetadataRepository idPictureMetadataRepository, SelfiePictureMetadataRepository selfiePictureMetadataRepository) {
-        this.idPictureRepository = idPictureRepository;
-        this.selfiePictureRepository = selfiePictureRepository;
-        this.idPictureMetadataRepository = idPictureMetadataRepository;
-        this.selfiePictureMetadataRepository = selfiePictureMetadataRepository;
+    public PictureService(PictureRepository pictureRepository, PictureMetadataRepository pictureMetadataRepository) {
+        this.pictureRepository = pictureRepository;
+        this.pictureMetadataRepository = pictureMetadataRepository;
     }
 
-    public void saveIdPicture(String userGuid, MultipartFile file) throws IOException {
-
+    public void savePicture(String userGuid, MultipartFile file, PictureType pictureType) throws IOException {
+        createPicture(userGuid, file, pictureType);
     }
 
-
-    public IdPicture getPictureById(String id) {
-        return idPictureRepository.findById(id).orElse(null);
+    public Picture getPictureById(String id) {
+        return pictureRepository.findById(id).orElse(null);
     }
 
-    public IdPictureMetadata getFileMetadataById(String id) {
-        return idPictureMetadataRepository.findById(id).orElse(null);
+    public PictureMetadata getFileMetadataById(String id) {
+        return pictureMetadataRepository.findById(id).orElse(null);
     }
 
-    public void deletePdfFile(String id) {
-
+    public void deletePicture(String id) {
+        pictureMetadataRepository.deleteById(id);
+        pictureRepository.deleteById(id);
     }
 
-    public List<PdfFileMetadata> getAllPDFFilesForUser(String guid) {
-        return null;
+    public void saveRegistrationPictures(String guid, MultipartFile idCardPhoto, MultipartFile selfiePhoto) throws IOException {
+        createPicture(guid, idCardPhoto, PictureType.ID);
+        createPicture(guid, selfiePhoto, PictureType.SELFIE);
     }
 
-    public String saveRegistrationPictures(String guid, MultipartFile idCardPhoto, MultipartFile selfiePhoto) throws IOException {
-        String idCardPictureFileName = StringUtils.cleanPath(idCardPhoto.getOriginalFilename());
-        String selfiePictureFileName = StringUtils.cleanPath(selfiePhoto.getOriginalFilename());
-        String picturesId = UUID.randomUUID().toString();
+    private void createPicture(String guid, MultipartFile idCardPhoto, PictureType pictureType) throws IOException {
+        String pictureFileName = StringUtils.cleanPath(idCardPhoto.getOriginalFilename());
         LocalDate localDate = LocalDate.now();
 
-        IdPictureMetadata idPictureMetadata = new IdPictureMetadata();
-        idPictureMetadata.setId(picturesId);
-        idPictureMetadata.setName(idCardPictureFileName);
-        idPictureMetadata.setSize((int) idCardPhoto.getSize());
-        idPictureMetadata.setDateUploaded(localDate);
-        idPictureMetadata.setUserGuid(guid);
-        idPictureMetadataRepository.save(idPictureMetadata);
+        String pictureUUID = UUID.randomUUID().toString();
+        PictureMetadata pictureMetadata = new PictureMetadata();
+        pictureMetadata.setId(pictureUUID);
+        pictureMetadata.setName(pictureFileName);
+        pictureMetadata.setSize((int) idCardPhoto.getSize());
+        pictureMetadata.setDateUploaded(localDate);
+        pictureMetadata.setUserGuid(guid);
+        pictureMetadata.setPictureType(pictureType);
+        pictureMetadataRepository.save(pictureMetadata);
 
-        IdPicture idPicture = new IdPicture();
-        idPicture.setId(picturesId);
-        idPicture.setContent(idCardPhoto.getBytes());
-        idPicture.setMetadata(idPictureMetadata);
-        idPictureRepository.save(idPicture);
+        Picture picture = new Picture();
+        picture.setId(pictureUUID);
+        picture.setContent(idCardPhoto.getBytes());
+        picture.setMetadata(pictureMetadata);
+        pictureRepository.save(picture);
+    }
 
-        SelfiePictureMetadata selfiePictureMetadata = new SelfiePictureMetadata();
-        selfiePictureMetadata.setId(picturesId);
-        selfiePictureMetadata.setName(selfiePictureFileName);
-        selfiePictureMetadata.setSize((int) selfiePhoto.getSize());
-        selfiePictureMetadata.setDateUploaded(localDate);
-        selfiePictureMetadata.setUserGuid(guid);
-        selfiePictureMetadataRepository.save(selfiePictureMetadata);
+    public Picture getPictureByUserGuid(String guid) {
+        List<PictureMetadata> profilePictures = pictureMetadataRepository.findByUserGuidAndPictureType(guid, PictureType.PROFILE);
+        if (!profilePictures.isEmpty()) {
+            return pictureRepository.findById(profilePictures.get(0).getId()).get();
+        }
 
-        SelfiePicture selfiePicture = new SelfiePicture();
-        selfiePicture.setId(picturesId);
-        selfiePicture.setContent(idCardPhoto.getBytes());
-        selfiePicture.setMetadata(selfiePictureMetadata);
-        selfiePictureRepository.save(selfiePicture);
-
-        return picturesId;
+        List<PictureMetadata> selfiePictures = pictureMetadataRepository.findByUserGuidAndPictureType(guid, PictureType.SELFIE);
+        PictureMetadata metadata = selfiePictures.get(0);
+        return pictureRepository.findById(metadata.getId()).get();
     }
 }
-
