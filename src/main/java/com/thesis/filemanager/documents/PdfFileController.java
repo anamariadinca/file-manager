@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -50,6 +51,18 @@ public class PdfFileController {
 
         return ResponseEntity.ok()
                 .body(fileNameAndIds);
+    }
+
+    @GetMapping("{id}/name")
+    public ResponseEntity<Map<String, String>> getPdfFileNameById(@PathVariable String id) {
+
+        log.info("getPdfFileNameById for doc id [{}]", id);
+
+        String fileName = pdfFileService.getPdfFileNameById(id);
+        Map<String, String> responseBody = Collections.singletonMap("fileName", fileName);
+
+        return ResponseEntity.ok()
+                .body(responseBody);
     }
 
     @GetMapping("/metadata")

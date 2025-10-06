@@ -22,6 +22,7 @@ public class ProtectedKeyFilter extends OncePerRequestFilter {
 
         String requestURI = request.getRequestURI();
         if (requestURI.matches("/api/pictures/[^/]+/getProfilePic")
+                || requestURI.matches("/api/pdf-files/[^/]+/name")
                 || "/register/user".equals(requestURI) ) {
             if (protectedKey.equals(requestKey)) {
                 filterChain.doFilter(request, response);

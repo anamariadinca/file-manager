@@ -59,6 +59,10 @@ public class PdfFileService {
         return pdfFileRepository.findById(id).orElse(null);
     }
 
+    public String getPdfFileNameById(String id) {
+        return pdfFileMetadataRepository.findById(id).get().getName();
+    }
+
     public PdfFileMetadata getFileMetadataById(String id) {
         return pdfFileMetadataRepository.findById(id).orElse(null);
     }

@@ -63,6 +63,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
 //                        .requestMatchers("/register/admin", "/register/user", "/users/authenticate").permitAll()
                                 .requestMatchers("/api/pictures/*/getProfilePic").permitAll()
+                                .requestMatchers("/api/pdf-files/*/name").permitAll()
                         .requestMatchers("/csrf").permitAll()
                         .anyRequest().authenticated()
                 )
