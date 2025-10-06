@@ -84,6 +84,25 @@ public class PdfFileController {
                 .body(fileMetadata);
     }
 
+    @GetMapping("/favorites")
+    public ResponseEntity<List<FileMetadata>> getFavoritePdfFilesMetadata(@RequestHeader("Authorization") String token) {
+        String jwt = token.substring(7);
+        String guid = jwtService.extractAndDecryptGuid(jwt);
+
+        log.info("gathering file names for user [{}]", guid);
+
+        List<PdfFileMetadata> filesMetadata = pdfFileService.getFavoritePDFFilesForUser(guid);
+
+        if (filesMetadata.isEmpty()) {
+            return ResponseEntity.ok(Collections.emptyList());
+        }
+
+        List<FileMetadata> fileMetadata = filesMetadata.stream().map(file -> new FileMetadata(file.getId(), file.getName(), file.getCreatedDate(), file.getSize(), file.isFavorite())).collect(Collectors.toList());
+
+        return ResponseEntity.ok()
+                .body(fileMetadata);
+    }
+
     @PostMapping
     public ResponseEntity<String> uploadPdfFile(@RequestHeader("Authorization") String token, @RequestParam("file") MultipartFile file) {
         String jwt = token.substring(7);

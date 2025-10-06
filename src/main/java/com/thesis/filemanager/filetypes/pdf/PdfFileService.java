@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class PdfFileService {
@@ -74,6 +75,10 @@ public class PdfFileService {
 
     public List<PdfFileMetadata> getAllPDFFilesForUser(String guid) {
         return pdfFileMetadataRepository.findByUserGuid(guid);
+    }
+
+    public List<PdfFileMetadata> getFavoritePDFFilesForUser(String guid) {
+        return pdfFileMetadataRepository.findByUserGuidAndFavorite(guid, true);
     }
 
     @Transactional

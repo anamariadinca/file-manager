@@ -9,5 +9,6 @@ import java.util.List;
 @Service
 public interface PdfFileMetadataRepository extends JpaRepository<PdfFileMetadata, String> {
     List<PdfFileMetadata> findByUserGuid(String guid);
+    List<PdfFileMetadata> findByUserGuidAndFavorite(String userGuid, boolean favorite);
 }
 
