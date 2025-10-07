@@ -8,10 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -149,14 +146,15 @@ public class PdfFileController {
         Resource resource = new ByteArrayResource(pdfContent);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileMetadata.getName());
-        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-        headers.add("Pragma", "no-cache");
-        headers.add("Expires", "0");
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        ContentDisposition contentDisposition = ContentDisposition.builder("inline")
+                .filename(fileMetadata.getName())
+                .build();
+        headers.setContentDisposition(contentDisposition);
+        headers.setContentLength(pdfContent.length);
 
         return ResponseEntity.ok()
                 .headers(headers)
-                .contentType(MediaType.APPLICATION_PDF)
                 .body(resource);
     }
 
