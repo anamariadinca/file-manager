@@ -64,6 +64,7 @@ public class SecurityConfig {
 //                        .requestMatchers("/register/admin", "/register/user", "/users/authenticate").permitAll()
                                 .requestMatchers("/api/pictures/*/getProfilePic").permitAll()
                                 .requestMatchers("/api/pdf-files/*/name").permitAll()
+                                .requestMatchers("/actuator/*").permitAll()
                         .requestMatchers("/csrf").permitAll()
                         .anyRequest().authenticated()
                 )
