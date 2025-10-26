@@ -15,6 +15,7 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
                         .allowedOrigins("http://localhost:3000") // Replace with your front-end app's origin
+                        .allowedOrigins("http://localhost:3001") // Replace with your front-end app's origin
                         .allowedOrigins("http://localhost:495") // Replace with your front-end app's origin
                         .allowedMethods("GET", "POST", "DELETE")
                         .allowCredentials(true);
